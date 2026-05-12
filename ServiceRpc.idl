@@ -1,0 +1,61 @@
+[
+    uuid(2ab87069-1fd0-4b3d-a674-7f9918a53d59),
+    version(1.0),
+    pointer_default(unique)
+]
+interface AntivirusServiceControl
+{
+    typedef [v1_enum] enum AntivirusRpcStatus
+    {
+        RpcStatusOk = 0,
+        RpcStatusError = 1,
+        RpcStatusUnauthorized = 2,
+        RpcStatusNoLicense = 3,
+        RpcStatusInvalidArgument = 4,
+        RpcStatusNetwork = 5,
+        RpcStatusConflict = 6,
+        RpcStatusServiceUnavailable = 7
+    } AntivirusRpcStatus;
+
+    typedef struct RpcUserInfo
+    {
+        int authenticated;
+        [string] wchar_t login[256];
+    } RpcUserInfo;
+
+    typedef struct RpcLicenseInfo
+    {
+        int hasLicense;
+        int blocked;
+        [string] wchar_t expiresAt[64];
+        [string] wchar_t productName[128];
+    } RpcLicenseInfo;
+
+    void RpcStopService([in] handle_t hBinding);
+
+    AntivirusRpcStatus RpcGetCurrentUser(
+        [in] handle_t hBinding,
+        [out] RpcUserInfo* userInfo);
+
+    AntivirusRpcStatus RpcLogin(
+        [in] handle_t hBinding,
+        [in, string] const wchar_t* login,
+        [in, string] const wchar_t* password,
+        [out] RpcUserInfo* userInfo);
+
+    AntivirusRpcStatus RpcLogout(
+        [in] handle_t hBinding);
+
+    AntivirusRpcStatus RpcGetLicense(
+        [in] handle_t hBinding,
+        [out] RpcLicenseInfo* licenseInfo);
+
+    AntivirusRpcStatus RpcActivate(
+        [in] handle_t hBinding,
+        [in, string] const wchar_t* activationCode,
+        [out] RpcLicenseInfo* licenseInfo);
+
+    AntivirusRpcStatus RpcGetAntivirusState(
+        [in] handle_t hBinding,
+        [out] int* enabled);
+}
