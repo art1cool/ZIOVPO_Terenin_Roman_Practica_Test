@@ -1,0 +1,45 @@
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake --preset vs2022-x64
+
+      - name: Build
+        run: cmake --build --preset build-release --target AntivirusClient AntivirusClientService
+
+      - name: Verify artifact
+        shell: pwsh
+        run: |
+          $guiArtifact = "out/build/vs2022-x64/Release/AntivirusClient.exe"
+          $serviceArtifact = "out/build/vs2022-x64/Release/AntivirusClient.Service.exe"
+          if (-not (Test-Path $guiArtifact)) {
+            throw "Missing build artifact: $guiArtifact"
+          }
+          if (-not (Test-Path $serviceArtifact)) {
+            throw "Missing build artifact: $serviceArtifact"
+          }
+          $dlls = Get-ChildItem "out/build/vs2022-x64/Release" -Filter "*.dll" -File -ErrorAction SilentlyContinue
+          if ($null -eq $dlls -or $dlls.Count -eq 0) {
+            throw "No runtime DLLs were found in out/build/vs2022-x64/Release"
+          }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AntivirusClient-Release
+          path: |
+            out/build/vs2022-x64/Release/AntivirusClient.exe
+            out/build/vs2022-x64/Release/AntivirusClient.Service.exe
+            out/build/vs2022-x64/Release/*.dll
+            out/build/vs2022-x64/Release/*.msi
+          retention-days: 30

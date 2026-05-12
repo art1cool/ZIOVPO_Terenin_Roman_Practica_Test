@@ -1,0 +1,63 @@
+﻿{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "vs2026-x64",
+      "displayName": "VS2026 x64",
+      "generator": "Visual Studio 18 2026",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/out/build/${presetName}"
+    },
+    {
+      "name": "vs2022-x64",
+      "displayName": "VS2022 x64",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/out/build/${presetName}"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-debug-vs2026",
+      "configurePreset": "vs2026-x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-release-vs2026",
+      "configurePreset": "vs2026-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "build-debug",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-release",
+      "configurePreset": "vs2022-x64",
+      "configuration": "Release"
+    }
+  ],
+  "packagePresets": [
+    {
+      "name": "msi-release-vs2026",
+      "configurePreset": "vs2026-x64",
+      "generators": [
+        "WIX"
+      ],
+      "configurations": [
+        "Release"
+      ]
+    },
+    {
+      "name": "msi-release-vs2022",
+      "configurePreset": "vs2022-x64",
+      "generators": [
+        "WIX"
+      ],
+      "configurations": [
+        "Release"
+      ]
+    }
+  ]
+}
