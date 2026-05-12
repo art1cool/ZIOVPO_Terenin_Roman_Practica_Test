@@ -17,6 +17,9 @@ jobs:
       - name: Build
         run: cmake --build --preset build-release --target AntivirusClient AntivirusClientService
 
+      - name: Msi
+        run: cpack --preset msi-release-vs2022
+
       - name: Verify artifact
         shell: pwsh
         run: |
@@ -41,5 +44,5 @@ jobs:
             out/build/vs2022-x64/Release/AntivirusClient.exe
             out/build/vs2022-x64/Release/AntivirusClient.Service.exe
             out/build/vs2022-x64/Release/*.dll
-            out/build/vs2022-x64/Release/*.msi
+            out/build/vs2022-x64/*.msi
           retention-days: 30
